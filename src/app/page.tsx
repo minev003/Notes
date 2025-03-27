@@ -1,103 +1,200 @@
-import Image from "next/image";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { Note } from "@/src/app/types/note";
 
-export default function Home() {
+const Page = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
+  const [editingNote, setEditingNote] = useState<number | null>(null);
+  const [note, setNote] = useState<Note>({ title: '', body: '', author: '' });
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  async function fetchNotes() {
+    try {
+      const response = await fetch('/api/notes');
+      const data = await response.json();
+      setNotes(data);
+    } catch (error) {
+      console.error('Грешка при зареждане на бележките:', error);
+    }
+  }
+
+  async function saveNote() {
+    try {
+      const response = await fetch('/api/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(note),
+      });
+
+      if (!response.ok) {
+        throw new Error('Неуспешно създаване на бележка');
+      }
+
+      fetchNotes();
+      setShowForm(false);
+      setNote({ title: '', body: '', author: '' });
+    } catch (error) {
+      console.error('Грешка:', error);
+    }
+  }
+
+  function handleEdit(note: Note) {
+    setEditingNote(Number(note.id));
+    setNote({ title: note.title, body: note.body, author: note.author });
+  }
+
+  async function updateNote() {
+    if (editingNote) {
+      try {
+        const response = await fetch(`/api/notes/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: editingNote, ...note }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Грешка при редактиране на бележката');
+        }
+
+        fetchNotes();
+        setEditingNote(null);
+        setNote({ title: '', body: '', author: '' });
+      } catch (error) {
+        console.error('Грешка:', error);
+      }
+    }
+  }
+
+  async function deleteNote(id: number) {
+    try {
+      const response = await fetch(`/api/notes`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Грешка при изтриване на бележката');
+      }
+
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    } catch (error) {
+      console.error('Грешка:', error);
+    }
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value } = e.target;
+    setNote((prevNote) => ({ ...prevNote, [name]: value }));
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="container py-5">
+      <h1 className="text-center mb-4 fw-bold" style={{ color: ' #808080' }}>Notes</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {(showForm || editingNote) && (
+        <div className="card bg-secondary text-white p-3 mb-4">
+          <div className="card-body">
+            <h5 className="card-title">{editingNote ? 'Edit note' : 'New note'}</h5>
+            <input
+              type="text"
+              className="form-control mb-3"
+              name="title"
+              value={note.title}
+              onChange={handleChange}
+              placeholder="Title"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <textarea
+              className="form-control mb-3"
+              name="body"
+              value={note.body}
+              onChange={handleChange}
+              placeholder="Content"
+              rows={2}
+            ></textarea>
+
+            {!editingNote && (
+              <input
+                type="text"
+                className="form-control mb-3"
+                name="author"
+                value={note.author}
+                onChange={handleChange}
+                placeholder="Author"
+              />
+            )}
+
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn btn-secondary me-2"
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingNote(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button className="btn btn-success"
+                onClick={editingNote ? updateNote : saveNote}
+                disabled={!note.title || !note.body || !note.author}
+              >
+                Save
+              </button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      )
+      }
+
+      <div className="list-group">
+        {notes.map((note) => (
+          <div key={note.id} className="list-group-item list-group-item-action w-50 mx-auto">
+            <h5
+              onClick={() => setSelectedNoteId(selectedNoteId === note.id ? null : Number(note.id))}
+              style={{ cursor: 'pointer' }}
+            >
+              {note.title}
+            </h5>
+            {selectedNoteId === note.id && (
+              <div className="mt-2">
+                <p>{note.body}</p>
+                <small className="text-muted">Author: {note.author}</small>
+                <div className="d-flex justify-content-between mt-3">
+                  <button onClick={() => handleEdit(note)} className="btn btn-warning me-2">
+                    Edit
+                  </button>
+                  <button onClick={() => deleteNote(Number(note.id))} className="btn btn-danger">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="d-flex justify-content-center">
+        <button
+          className="btn mb-4 mt-4"
+          style={{ backgroundColor: '#808080', color: 'white' }}
+          onClick={() => setShowForm(true)}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          Add new note
+        </button>
+      </div>
+    </div >
   );
-}
+};
+
+export default Page;

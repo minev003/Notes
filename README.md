@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Notes Project
 
-First, run the development server:
+Това е проект за бележки, разработен с [Next.js](https://nextjs.org), [Prisma ORM](https://www.prisma.io/) и [Bootstrap](https://getbootstrap.com/).
+
+## Изисквания
+
+- MySQL: За базата данни, управлявана чрез MySQL Workbench.
+- Prisma ORM: За заявките към базата данни и миграциите.
+- Bootstrap: За стилизиране и отзивчиво оформление.
+
+## Стартиране на проекта
+
+### 1. Настройка на базата данни
+
+1. Инсталирайте MySQL Workbench и създайте нов MySQL инстанс.
+2. Конфигурирайте връзката към базата данни в `.env` файла с подходящите идентификационни данни:
+
+```
+DATABASE_URL="mysql://username:password@localhost:3306/your_database_name"
+```
+
+### 2. Миграции с Prisma
+
+Изпълнете миграциите на Prisma, за да създадете необходимите таблици в базата данни:
+
+```bash
+npx prisma migrate dev
+```
+
+### 3. Стартиране на приложението
+
+За да стартирате проекта локално, използвайте командата:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+или, ако използвате `yarn`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Проектът ще бъде достъпен на [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Структура на проекта
 
-To learn more about Next.js, take a look at the following resources:
+- `app/`: Основната директория на приложението, съдържаща страниците и компонентите.
+- `pages/api/`: API маршрути за обработка на заявките към базата данни.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Използвани технологии
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js**: За създаване на респонсив уеб приложение.
+- **Prisma ORM**: За работа с базата данни.
+- **MySQL**: За съхранение на данни.
+- **Bootstrap**: За стилизиране на приложението.
+- **TypeScript**: За валидиране на данни.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Още информация
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+За повече информация относно Next.js, можете да разгледате следните ресурси:
+
+- [Документация на Next.js](https://nextjs.org/docs) - Научете повече за функциите и API на Next.js.
+- [Learn Next.js](https://nextjs.org/learn) - Интерактивен курс по Next.js.
+
+## Деплойване на Vercel
+
+Най-лесният начин да деплойнете вашето Next.js приложение е чрез платформата Vercel.
+
+За повече информация относно деплойването, разгледайте [документацията за деплойване на Next.js](https://nextjs.org/docs/app/building-your-application/deploying).
