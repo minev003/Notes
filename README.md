@@ -1,72 +1,71 @@
-
 # Notes Project
 
-Това е проект за бележки, разработен с [Next.js](https://nextjs.org), [Prisma ORM](https://www.prisma.io/) и [Bootstrap](https://getbootstrap.com/).
+This is a notes project developed with [Next.js](https://nextjs.org), [Prisma ORM](https://www.prisma.io/) and [Bootstrap](https://getbootstrap.com/).
 
-## Изисквания
+## Requirements
 
-- MySQL: За базата данни, управлявана чрез MySQL Workbench.
-- Prisma ORM: За заявките към базата данни и миграциите.
-- Bootstrap: За стилизиране и отзивчиво оформление.
+- MySQL: For a database managed via MySQL Workbench.
+- Prisma ORM: For database queries and migrations.
+- Bootstrap: For styling and responsive layout.
 
-## Стартиране на проекта
+## Starting the project
 
-### 1. Настройка на базата данни
+### 1. Setting up the database
 
-1. Инсталирайте MySQL Workbench и създайте нов MySQL инстанс.
-2. Конфигурирайте връзката към базата данни в `.env` файла с подходящите идентификационни данни:
+1. Install MySQL Workbench and create a new MySQL instance.
+2. Configure the database connection in the `.env` file with the appropriate credentials:
 
 ```
 DATABASE_URL="mysql://username:password@localhost:3306/your_database_name"
+
 ```
 
-### 2. Миграции с Prisma
+### 2. Prisma Migrations
 
-Изпълнете миграциите на Prisma, за да създадете необходимите таблици в базата данни:
+Run the Prisma migration to create the necessary tables in the database:
 
-```bash
+``` bash
 npx prisma migrate dev
 ```
 
-### 3. Стартиране на приложението
+### 3. Launch the application
 
-За да стартирате проекта локално, използвайте командата:
+To launch the project locally, use the command:
 
-```bash
-npm run dev
+``` bash
+npm run development
 ```
 
-или, ако използвате `yarn`:
+or, if you are using `yarn`:
 
-```bash
-yarn dev
+``` bash
+yarn development
 ```
 
-Проектът ще бъде достъпен на [http://localhost:3000](http://localhost:3000).
+The project will be accessible at [http://localhost:3000](http://localhost:3000).
 
-## Структура на проекта
+## Project Structure
 
-- `app/`: Основната директория на приложението, съдържаща страниците и компонентите.
-- `pages/api/`: API маршрути за обработка на заявките към базата данни.
+- `app/`: The main directory of the application, containing the pages and components.
+- `pages/api/`: API routes for processing database requests.
 
-## Използвани технологии
+## Technologies used
 
-- **Next.js**: За създаване на респонсив уеб приложение.
-- **Prisma ORM**: За работа с базата данни.
-- **MySQL**: За съхранение на данни.
-- **Bootstrap**: За стилизиране на приложението.
-- **TypeScript**: За валидиране на данни.
+- **Next.js**: For creating a web application response.
+- **Prisma ORM**: For working with a database.
+- **MySQL**: For storing data.
+- **Bootstrap**: For styling the application.
+- **TypeScript**: For validating data.
 
+## More information
 
-## Още информация
+For more information about Next.js, you can check out the following resources:
 
-За повече информация относно Next.js, можете да разгледате следните ресурси:
+- [Next.js Documentation](https://nextjs.org/docs) - Learn more about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - Interactive Next.js course.
 
-- [Документация на Next.js](https://nextjs.org/docs) - Научете повече за функциите и API на Next.js.
-- [Learn Next.js](https://nextjs.org/learn) - Интерактивен курс по Next.js.
+## Deploying Vercel
 
-## Деплойване на Vercel
+The easiest way to deploy your Next.js application is through the Vercel platform.
 
-Най-лесният начин да деплойнете вашето Next.js приложение е чрез платформата Vercel.
-
-За повече информация относно деплойването, разгледайте [документацията за деплойване на Next.js](https://nextjs.org/docs/app/building-your-application/deploying).
+For more information about deployment, see the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
